@@ -1,0 +1,6 @@
+library("tdr-jenkinslib")
+
+lambdaTests(
+        libraryName: "sign cookies",
+        deployJobName: "TDR Sign Cookies Lambda Deploy"
+)
