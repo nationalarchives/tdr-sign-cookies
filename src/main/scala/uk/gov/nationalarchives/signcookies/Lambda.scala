@@ -2,7 +2,6 @@ package uk.gov.nationalarchives.signcookies
 
 import cats.effect.{IO, Resource}
 import cats.syntax.option._
-import cats.syntax._
 import cats.effect.unsafe.implicits.global
 import com.amazonaws.services.cloudfront.CloudFrontCookieSigner
 import com.amazonaws.services.cloudfront.CloudFrontCookieSigner.CookiesForCustomPolicy
@@ -72,7 +71,7 @@ class Lambda extends RequestStreamHandler {
     IO(response.asJson.printWith(Printer.noSpaces))
   }
 
-  def createCookies(userId: UUID, config: Config): IO[CookiesForCustomPolicy] = {
+  private def createCookies(userId: UUID, config: Config): IO[CookiesForCustomPolicy] = {
     val decodedCert = Base64.getDecoder.decode(config.privateKey)
     val keySpec = new PKCS8EncodedKeySpec(decodedCert)
     val keyFactory = KeyFactory.getInstance("RSA")
@@ -110,7 +109,6 @@ class Lambda extends RequestStreamHandler {
     }
   }
 
-
   override def handleRequest(input: InputStream, output: OutputStream, context: Context): Unit = {
     val rawInput = Source.fromInputStream(input).mkString
     val response = for {
@@ -127,7 +125,6 @@ class Lambda extends RequestStreamHandler {
       val lambdaResponse = LambdaResponse(401).asJson.printWith(Printer.noSpaces)
       write(output, lambdaResponse)
     }).unsafeRunSync()
-
   }
 }
 

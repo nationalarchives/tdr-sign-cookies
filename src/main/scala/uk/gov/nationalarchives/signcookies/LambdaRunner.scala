@@ -1,11 +1,7 @@
 package uk.gov.nationalarchives.signcookies
 
-import uk.gov.nationalarchives.signcookies.Lambda.Config
-
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
 import java.nio.charset.StandardCharsets
-import java.security.KeyPairGenerator
-import java.util.{Base64, UUID}
 
 object LambdaRunner extends App {
   val lambda = new Lambda
