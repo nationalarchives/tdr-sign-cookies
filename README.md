@@ -1,18 +1,6 @@
 ## Sign cookies lambda
 
-This lambda provides the response when the front end makes a request to upload.tdr.nationalarchives.gov.uk. The request goes:
-
-Route53 -> Cloudfront -> API Gateway -> Lambda
-
-The lambda carries out the following steps.
-
-1. Decode the incoming json from API gateway and retrieve the access token.
-2. Validate the token with the Keycloak library. If this has expired or is otherwise invalid, the lambda returns 401.
-3. Create the signed cookies using the private key from the environment variables.
-4. Create the response with the correct `Set-Cookies` headers set
-5. Set the `Access-Control-Allow-Origin` header based on the environment and origin header.
-6. Return a 200 response.
-
+project/plugins.sbt
 ### Running Locally
 There is a `LambdaRunner` class with some example json. To run this, you will need to set the environment variables to the same values as the integration lambda. You can get these by running this command with integration credentials
 
