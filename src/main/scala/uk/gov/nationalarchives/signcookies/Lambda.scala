@@ -1,11 +1,7 @@
 package uk.gov.nationalarchives.signcookies
 
-import cats.effect.{IO, Resource}
-import cats.syntax.option._
 import cats.effect.unsafe.implicits.global
-import com.amazonaws.services.cloudfront.CloudFrontCookieSigner
-import com.amazonaws.services.cloudfront.CloudFrontCookieSigner.CookiesForCustomPolicy
-import com.amazonaws.services.cloudfront.util.SignerUtils.Protocol
+import cats.effect.{IO, Resource}
 import com.amazonaws.services.lambda.runtime.{Context, RequestStreamHandler}
 import com.typesafe.scalalogging.Logger
 import io.circe.Printer._
@@ -22,10 +18,6 @@ import uk.gov.nationalarchives.tdr.keycloak.{KeycloakUtils, TdrKeycloakDeploymen
 
 import java.io.{InputStream, OutputStream}
 import java.nio.charset.Charset
-import java.security.KeyFactory
-import java.security.spec.PKCS8EncodedKeySpec
-import java.time.temporal.ChronoUnit
-import java.util.{Base64, Date, UUID}
 import scala.concurrent.ExecutionContextExecutor
 import scala.io.Source
 

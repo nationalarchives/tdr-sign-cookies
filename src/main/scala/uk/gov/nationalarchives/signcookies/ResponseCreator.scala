@@ -2,9 +2,6 @@ package uk.gov.nationalarchives.signcookies
 
 import cats.effect.IO
 import cats.syntax.option._
-import io.circe.syntax._
-import io.circe.generic.auto._
-import io.circe.Printer.noSpaces
 import com.amazonaws.services.cloudfront.CloudFrontCookieSigner
 import com.amazonaws.services.cloudfront.CloudFrontCookieSigner.CookiesForCustomPolicy
 import com.amazonaws.services.cloudfront.util.SignerUtils.Protocol
