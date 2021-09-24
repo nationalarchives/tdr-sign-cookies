@@ -66,6 +66,12 @@ object LambdaTestUtils {
        |  "headers": {
        |    "Authorization": "Bearer $accessToken",
        |    "origin": "$origin"
+       |
+       |  },
+       |  "requestContext": {
+       |    "identity": {
+       |      "sourceIp": "1.2.3.4"
+       |    }
        |  }
        |}""".stripMargin
     new ByteArrayInputStream(input.getBytes)

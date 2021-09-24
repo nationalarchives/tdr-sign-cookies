@@ -9,17 +9,13 @@ import uk.gov.nationalarchives.signcookies.Lambda.{Config, LambdaResponse, Respo
 
 import java.security.KeyFactory
 import java.security.spec.PKCS8EncodedKeySpec
+import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.{Base64, Date, UUID}
 
-class ResponseCreator {
+class ResponseCreator(timeUtils: TimeUtils) {
 
-  def generateResponse(userId: UUID, config: Config, origin: String): IO[LambdaResponse] = for {
-    cookies <- createCookies(userId, config)
-    response <- createResponse(cookies, origin, config)
-  } yield response
-
-  private def createResponse(cookies: CookiesForCustomPolicy, origin: String, config: Config): IO[LambdaResponse] = {
+  def createResponse(cookies: CookiesForCustomPolicy, origin: String, config: Config): IO[LambdaResponse] = {
     val originResponseHeaderValue = if (config.environment == "intg" && origin == "http://localhost:9000") {
       origin
     } else {
@@ -38,7 +34,7 @@ class ResponseCreator {
     IO(response)
   }
 
-  private def createCookies(userId: UUID, config: Config): IO[CookiesForCustomPolicy] = {
+  def createCookies(userId: UUID, config: Config, sourceIp: String): IO[CookiesForCustomPolicy] = {
     val decodedCert = Base64.getDecoder.decode(config.privateKey)
     val keySpec = new PKCS8EncodedKeySpec(decodedCert)
     val keyFactory = KeyFactory.getInstance("RSA")
@@ -48,9 +44,9 @@ class ResponseCreator {
     val protocol = Protocol.https
     val distributionDomain = config.uploadDomain
     val keyPairId = config.keyPairId
-    val activeFrom = Date.from(new Date().toInstant.minus(3, ChronoUnit.HOURS))
-    val expiresOn = Date.from(new Date().toInstant.plus(3, ChronoUnit.HOURS))
-    val ipRange = "0.0.0.0/0"
+    val activeFrom = Date.from(timeUtils.now())
+    val expiresOn = Date.from(timeUtils.now().plus(30, ChronoUnit.MINUTES))
+    val ipRange = s"$sourceIp/32"
 
     IO {
       CloudFrontCookieSigner.getCookiesForCustomPolicy(
@@ -67,5 +63,5 @@ class ResponseCreator {
   }
 }
 object ResponseCreator {
-  def apply() = new ResponseCreator()
+  def apply(timeUtils: TimeUtils) = new ResponseCreator(timeUtils)
 }
