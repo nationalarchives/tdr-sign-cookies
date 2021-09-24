@@ -27,7 +27,6 @@ class LambdaTest extends AnyFlatSpec with BeforeAndAfterEach {
     keycloakMock.stop()
   }
 
-
   "the lambda" should "return 401 if the token is expired" in {
     val accessToken = createAccessToken(UUID.randomUUID().some, Instant.now().minusSeconds(3600))
     val inputStream = getInputStream(accessToken)
