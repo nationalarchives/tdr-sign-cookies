@@ -8,10 +8,10 @@ import com.amazonaws.services.cloudfront.CloudFrontCookieSigner.CookiesForCustom
 import com.amazonaws.services.cloudfront.util.SignerUtils.Protocol
 import com.amazonaws.services.lambda.runtime.{Context, RequestStreamHandler}
 import com.typesafe.scalalogging.Logger
-import io.circe.Printer
+import io.circe.Printer._
 import io.circe.generic.auto._
 import io.circe.parser.decode
-import io.circe.syntax.EncoderOps
+import io.circe.syntax._
 import pureconfig.ConfigSource
 import pureconfig.generic.auto._
 import pureconfig.module.catseffect.syntax._
@@ -52,53 +52,6 @@ class Lambda extends RequestStreamHandler {
     IO.fromEither(e)
   }
 
-  private def createResponse(cookies: CookiesForCustomPolicy, origin: String, config: Config): IO[String] = {
-    val originResponseHeaderValue = if (config.environment == "intg" && origin == "http://localhost:9000") {
-      origin
-    } else {
-      config.frontendUrl
-    }
-
-    val suffix = "Path=/; Secure; HttpOnly; SameSite=None"
-    val cookieResponse = List(
-      s"${cookies.getPolicy.getKey}=${cookies.getPolicy.getValue}; $suffix",
-      s"${cookies.getKeyPairId.getKey}=${cookies.getKeyPairId.getValue}; $suffix",
-      s"${cookies.getSignature.getKey}=${cookies.getSignature.getValue}; $suffix"
-    )
-    val headers = ResponseHeaders(originResponseHeaderValue, "true")
-    val multiValueHeaders = ResponseMultiValueHeaders(cookieResponse)
-    val response = LambdaResponse(200, headers.some, multiValueHeaders.some)
-    IO(response.asJson.printWith(Printer.noSpaces))
-  }
-
-  private def createCookies(userId: UUID, config: Config): IO[CookiesForCustomPolicy] = {
-    val decodedCert = Base64.getDecoder.decode(config.privateKey)
-    val keySpec = new PKCS8EncodedKeySpec(decodedCert)
-    val keyFactory = KeyFactory.getInstance("RSA")
-    val privateKey = keyFactory.generatePrivate(keySpec)
-    // Authorisation rule: only allow users to upload files to a folder corresponding to their user ID
-    val s3ObjectKey = s"$userId/*"
-    val protocol = Protocol.https
-    val distributionDomain = config.uploadDomain
-    val keyPairId = config.keyPairId
-    val activeFrom = Date.from(new Date().toInstant.minus(3, ChronoUnit.HOURS))
-    val expiresOn = Date.from(new Date().toInstant.plus(3, ChronoUnit.HOURS))
-    val ipRange = "0.0.0.0/0"
-
-    IO {
-      CloudFrontCookieSigner.getCookiesForCustomPolicy(
-        protocol,
-        distributionDomain,
-        privateKey,
-        s3ObjectKey,
-        keyPairId,
-        expiresOn,
-        activeFrom,
-        ipRange
-      )
-    }
-  }
-
   def write(outputStream: OutputStream, output: String): IO[Unit] = {
     Resource.make {
       IO(outputStream)
@@ -111,18 +64,18 @@ class Lambda extends RequestStreamHandler {
 
   override def handleRequest(input: InputStream, output: OutputStream, context: Context): Unit = {
     val rawInput = Source.fromInputStream(input).mkString
+    val responseCreator = ResponseCreator()
     val response = for {
       lambdaInput <- IO.fromEither(decode[LambdaInput](rawInput))
       config <- ConfigSource.default.loadF[IO, Config].map(decryptVariables)
       validatedToken <- validateToken(config.authUrl, lambdaInput.headers.Authorization.stripPrefix("Bearer "))
-      cookies <- createCookies(validatedToken.userId, config)
-      response <- createResponse(cookies, lambdaInput.headers.origin, config)
-      _ <- write(output, response)
+      response <- responseCreator.generateResponse(validatedToken.userId, config, lambdaInput.headers.origin)
+      _ <- write(output, response.asJson.printWith(noSpaces))
     } yield response
 
     response.handleErrorWith(err => {
       logger.error("Error getting the signed cookies", err)
-      val lambdaResponse = LambdaResponse(401).asJson.printWith(Printer.noSpaces)
+      val lambdaResponse = LambdaResponse(401).asJson.printWith(noSpaces)
       write(output, lambdaResponse)
     }).unsafeRunSync()
   }

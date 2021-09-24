@@ -67,34 +67,4 @@ class LambdaTest extends AnyFlatSpec with BeforeAndAfterEach {
 
     decode[LambdaResponse](byteArrayCaptor.getValue.map(_.toChar).mkString).toOption.get.statusCode should equal(200)
   }
-
-  "the lambda" should "return allowed origin localhost if the origin is localhost" in {
-    val accessToken = createAccessToken(UUID.randomUUID().some)
-    val inputStream = getInputStream(accessToken)
-    val byteArrayCaptor: ArgumentCaptor[Array[Byte]] = ArgumentCaptor.forClass(classOf[Array[Byte]])
-
-    new Lambda().handleRequest(inputStream, outputStream(byteArrayCaptor), null)
-
-    decode[LambdaResponse](byteArrayCaptor.getValue.map(_.toChar).mkString).toOption.get.statusCode should equal(200)
-  }
-
-  "the lambda" should "return allowed origin integration if the origin is integration" in {
-    val accessToken = createAccessToken(UUID.randomUUID().some)
-    val inputStream = getInputStream(accessToken, "https://tdr-integration.nationalarchives.gov.uk")
-    val byteArrayCaptor: ArgumentCaptor[Array[Byte]] = ArgumentCaptor.forClass(classOf[Array[Byte]])
-
-    new Lambda().handleRequest(inputStream, outputStream(byteArrayCaptor), null)
-
-    decode[LambdaResponse](byteArrayCaptor.getValue.map(_.toChar).mkString).toOption.get.statusCode should equal(200)
-  }
-
-  "the lambda" should "return allowed origin integration if the origin is an unknown domain" in {
-    val accessToken = createAccessToken(UUID.randomUUID().some)
-    val inputStream = getInputStream(accessToken, "https://unknown-domain")
-    val byteArrayCaptor: ArgumentCaptor[Array[Byte]] = ArgumentCaptor.forClass(classOf[Array[Byte]])
-
-    new Lambda().handleRequest(inputStream, outputStream(byteArrayCaptor), null)
-
-    decode[LambdaResponse](byteArrayCaptor.getValue.map(_.toChar).mkString).toOption.get.statusCode should equal(200)
-  }
 }
