@@ -19,6 +19,9 @@ There is a `LambdaRunner` class with some example json. To run this, you will ne
 `aws lambda get-function --function-name tdr-sign-cookies-intg --query  'Configuration.Environment.Variables'  
 `
 
-You will also need to set and environment variable called `AWS_LAMBDA_FUNCTION_NAME` with the value `tdr-sign-cookies-intg` This is set automatically by the lambda but has to be set manually here.
+You will also need to set an environment variable called `AWS_LAMBDA_FUNCTION_NAME` with the value `tdr-sign-cookies-intg` This is set automatically by the lambda but has to be set manually here.
 
 You will need to make sure that you have integration credentials set before running `LambdaRunner`, either by setting them in `~/.aws/credentials` or by setting environment variables in the run configuration. You will need permissions to access KMS keys for this to work.
+
+The expected response will be `{"statusCode":401,"headers":null,"multiValueHeaders":null,"isBase64Encoded":false}` because the token has expired. If you want a 200 response, you will need to replace the existing token with an active token.
+
