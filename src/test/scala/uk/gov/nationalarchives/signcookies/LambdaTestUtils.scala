@@ -70,7 +70,7 @@ object LambdaTestUtils {
        |  },
        |  "requestContext": {
        |    "identity": {
-       |      "sourceIp": "1.2.3.4"
+       |      "sourceIp": "0.0.0.0"
        |    }
        |  }
        |}""".stripMargin
