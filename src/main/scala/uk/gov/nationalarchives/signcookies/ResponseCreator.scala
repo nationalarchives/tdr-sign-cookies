@@ -9,7 +9,6 @@ import uk.gov.nationalarchives.signcookies.Lambda.{Config, LambdaResponse, Respo
 
 import java.security.KeyFactory
 import java.security.spec.PKCS8EncodedKeySpec
-import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.{Base64, Date, UUID}
 
@@ -34,7 +33,7 @@ class ResponseCreator(timeUtils: TimeUtils) {
     IO(response)
   }
 
-  def createCookies(userId: UUID, config: Config, sourceIp: String): IO[CookiesForCustomPolicy] = {
+  def createCookies(userId: UUID, config: Config): IO[CookiesForCustomPolicy] = {
     val decodedCert = Base64.getDecoder.decode(config.privateKey)
     val keySpec = new PKCS8EncodedKeySpec(decodedCert)
     val keyFactory = KeyFactory.getInstance("RSA")
@@ -46,7 +45,7 @@ class ResponseCreator(timeUtils: TimeUtils) {
     val keyPairId = config.keyPairId
     val activeFrom = Date.from(timeUtils.now())
     val expiresOn = Date.from(timeUtils.now().plus(30, ChronoUnit.MINUTES))
-    val ipRange = s"$sourceIp/32"
+    val ipRange = s"0.0.0.0/0"
 
     IO {
       CloudFrontCookieSigner.getCookiesForCustomPolicy(
