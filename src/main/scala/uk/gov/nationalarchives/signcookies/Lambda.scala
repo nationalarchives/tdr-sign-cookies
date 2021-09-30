@@ -61,7 +61,7 @@ class Lambda extends RequestStreamHandler {
       lambdaInput <- IO.fromEither(decode[LambdaInput](rawInput))
       config <- ConfigSource.default.loadF[IO, Config].map(decryptVariables)
       validatedToken <- validateToken(config.authUrl, lambdaInput.headers.Authorization.stripPrefix("Bearer "))
-      cookies <- responseCreator.createCookies(validatedToken.userId, config, lambdaInput.requestContext.identity.sourceIp)
+      cookies <- responseCreator.createCookies(validatedToken.userId, config)
       response <- responseCreator.createResponse(cookies, lambdaInput.headers.origin, config)
       _ <- write(output, response.asJson.printWith(noSpaces))
     } yield response
@@ -77,11 +77,7 @@ class Lambda extends RequestStreamHandler {
 object Lambda {
   case class Headers(Authorization: String, origin: String)
 
-  case class LambdaIdentity(sourceIp: String)
-
-  case class LambdaRequestContext(identity: LambdaIdentity)
-
-  case class LambdaInput(headers: Headers, requestContext: LambdaRequestContext)
+  case class LambdaInput(headers: Headers)
 
   case class ResponseHeaders(`Access-Control-Allow-Origin`: String, `Access-Control-Allow-Credentials`: String)
 

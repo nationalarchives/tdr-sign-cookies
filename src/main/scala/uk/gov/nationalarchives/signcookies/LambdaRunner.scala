@@ -14,11 +14,6 @@ object LambdaRunner extends App {
        |  "headers": {
        |    "Authorization": "Bearer $accessToken",
        |    "origin": "http://localhost:9000"
-       |  },
-       |  "requestContext": {
-       |    "identity": {
-       |      "sourceIp": "1.2.3.4"
-       |    }
        |  }
        |}""".stripMargin
   val inputStream = new ByteArrayInputStream(input.getBytes)

@@ -67,19 +67,18 @@ class ResponseCreatorTest extends AnyFlatSpec with Tables {
 
   "createCookies" should "set the correct policy" in {
     val userId = UUID.randomUUID()
-    val ip = "1.2.3.4"
     val keyPair = "keyPairId"
     val uploadDomain = "upload.domain"
     val testTimeUtils = new TestTimeUtils()
     val config = Config(privateKey, "", "", "", "", "", uploadDomain, keyPair)
 
     val cookies = ResponseCreator(testTimeUtils)
-      .createCookies(userId, config, ip).unsafeRunSync()
+      .createCookies(userId, config).unsafeRunSync()
     val decodedPolicy = decodeValue(cookies.getPolicy.getValue)
     val statement = IO.fromEither(decode[Policy](decodedPolicy)).unsafeRunSync().Statement.head
 
     cookies.getKeyPairId.getValue should equal(keyPair)
-    statement.Condition.IpAddress.`AWS:SourceIp` should equal(s"$ip/32")
+    statement.Condition.IpAddress.`AWS:SourceIp` should equal(s"0.0.0.0/0")
     statement.Resource should equal(s"https://$uploadDomain/$userId/*")
     statement.Condition.DateLessThan.`AWS:EpochTime` should equal(testTimeUtils.now().plus(30, ChronoUnit.MINUTES).getEpochSecond)
     statement.Condition.DateGreaterThan.`AWS:EpochTime` should equal(testTimeUtils.now().getEpochSecond)
