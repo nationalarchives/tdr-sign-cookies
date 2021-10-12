@@ -44,7 +44,7 @@ class ResponseCreator(timeUtils: TimeUtils) {
     val distributionDomain = config.uploadDomain
     val keyPairId = config.keyPairId
     val activeFrom = null
-    val expiresOn = Date.from(timeUtils.now().plus(24, ChronoUnit.HOURS))
+    val expiresOn = Date.from(timeUtils.now().plus(30, ChronoUnit.MINUTES))
     val ipRange = null
 
     IO {
