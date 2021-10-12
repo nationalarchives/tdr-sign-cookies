@@ -18,9 +18,8 @@ import java.time.temporal.ChronoUnit
 
 class ResponseCreatorTest extends AnyFlatSpec with Tables {
 
-  case class Condition(IpAddress: IpAddress, DateLessThan: AWSEpoch, DateGreaterThan: AWSEpoch)
+  case class Condition(DateLessThan: AWSEpoch)
   case class AWSEpoch(`AWS:EpochTime`: Int)
-  case class IpAddress (`AWS:SourceIp`: String)
   case class Policy(Statement: List[Statement])
   case class Statement (Resource: String,Condition: Condition)
 
@@ -78,9 +77,7 @@ class ResponseCreatorTest extends AnyFlatSpec with Tables {
     val statement = IO.fromEither(decode[Policy](decodedPolicy)).unsafeRunSync().Statement.head
 
     cookies.getKeyPairId.getValue should equal(keyPair)
-    statement.Condition.IpAddress.`AWS:SourceIp` should equal(s"0.0.0.0/0")
     statement.Resource should equal(s"https://$uploadDomain/$userId/*")
     statement.Condition.DateLessThan.`AWS:EpochTime` should equal(testTimeUtils.now().plus(30, ChronoUnit.MINUTES).getEpochSecond)
-    statement.Condition.DateGreaterThan.`AWS:EpochTime` should equal(testTimeUtils.now().getEpochSecond)
   }
 }
