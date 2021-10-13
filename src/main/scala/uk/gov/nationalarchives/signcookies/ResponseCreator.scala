@@ -43,9 +43,9 @@ class ResponseCreator(timeUtils: TimeUtils) {
     val protocol = Protocol.https
     val distributionDomain = config.uploadDomain
     val keyPairId = config.keyPairId
-    val activeFrom = Date.from(timeUtils.now())
+    val activeFrom = null
     val expiresOn = Date.from(timeUtils.now().plus(30, ChronoUnit.MINUTES))
-    val ipRange = s"0.0.0.0/0"
+    val ipRange = null
 
     IO {
       CloudFrontCookieSigner.getCookiesForCustomPolicy(
