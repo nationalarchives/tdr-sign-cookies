@@ -50,7 +50,7 @@ class Lambda extends RequestStreamHandler {
     } { outStream =>
       IO(outStream.close()).handleErrorWith(_ => IO.unit)
     }.use {
-      o => IO(o.write(output.getBytes(Charset.forName("UTF-8"))))
+      o => IO.println(output) >> IO(o.write(output.getBytes(Charset.forName("UTF-8"))))
     }
   }
 
@@ -69,8 +69,9 @@ class Lambda extends RequestStreamHandler {
     response.handleErrorWith(err => {
       logger.error("Error getting the signed cookies", err)
       val lambdaResponse = LambdaResponse(401).asJson.printWith(noSpaces)
-      write(output, lambdaResponse)
+      IO.println(s"Error getting cookies ${err.getMessage}") >> write(output, lambdaResponse)
     }).unsafeRunSync()
+
   }
 }
 
