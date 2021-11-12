@@ -50,7 +50,7 @@ class Lambda extends RequestStreamHandler {
     } { outStream =>
       IO(outStream.close()).handleErrorWith(_ => IO.unit)
     }.use {
-      o => IO(o.write(output.getBytes(Charset.forName("UTF-8"))))
+      o => IO.println(output) >> IO(o.write(output.getBytes(Charset.forName("UTF-8"))))
     }
   }
 
@@ -58,6 +58,7 @@ class Lambda extends RequestStreamHandler {
     val rawInput = Source.fromInputStream(input).mkString
     val responseCreator = ResponseCreator(new TimeUtilsImpl())
     val response = for {
+      _ <- IO.println(rawInput)
       lambdaInput <- IO.fromEither(decode[LambdaInput](rawInput))
       config <- ConfigSource.default.loadF[IO, Config].map(decryptVariables)
       validatedToken <- validateToken(config.authUrl, lambdaInput.headers.Authorization.stripPrefix("Bearer "))
@@ -69,8 +70,10 @@ class Lambda extends RequestStreamHandler {
     response.handleErrorWith(err => {
       logger.error("Error getting the signed cookies", err)
       val lambdaResponse = LambdaResponse(401).asJson.printWith(noSpaces)
-      write(output, lambdaResponse)
+      //Temporary for now. Will use a working logging library if this becomes permanent
+      IO.println(s"Error getting cookies ${err.getStackTrace.map(_.toString).mkString("\n")}") >> write(output, lambdaResponse)
     }).unsafeRunSync()
+
   }
 }
 
