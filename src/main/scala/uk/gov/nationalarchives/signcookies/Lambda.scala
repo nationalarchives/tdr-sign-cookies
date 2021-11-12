@@ -60,7 +60,6 @@ class Lambda extends RequestStreamHandler {
     val response = for {
       _ <- IO.println(rawInput)
       lambdaInput <- IO.fromEither(decode[LambdaInput](rawInput))
-      _ <- IO.println(lambdaInput.headers)
       config <- ConfigSource.default.loadF[IO, Config].map(decryptVariables)
       validatedToken <- validateToken(config.authUrl, lambdaInput.headers.Authorization.stripPrefix("Bearer "))
       cookies <- responseCreator.createCookies(validatedToken.userId, config)
