@@ -67,7 +67,7 @@ class LambdaTest extends AnyFlatSpec with BeforeAndAfterEach {
     decode[LambdaResponse](byteArrayCaptor.getValue.map(_.toChar).mkString).toOption.get.statusCode should equal(200)
   }
 
-  "the lambda" should "does not error if the origin header has an upper case first letter" in {
+  "the lambda" should "not error if the origin header has an upper case first letter" in {
     val accessToken = createAccessToken(UUID.randomUUID().some)
     val inputStream = getInputStream(accessToken, originKey = "Origin")
     val byteArrayCaptor: ArgumentCaptor[Array[Byte]] = ArgumentCaptor.forClass(classOf[Array[Byte]])
