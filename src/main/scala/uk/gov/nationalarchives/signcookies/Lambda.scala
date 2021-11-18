@@ -55,7 +55,7 @@ class Lambda extends RequestStreamHandler {
   }
 
   override def handleRequest(input: InputStream, output: OutputStream, context: Context): Unit = {
-    val rawInput = Source.fromInputStream(input).mkString
+    val rawInput = Source.fromInputStream(input).mkString.replace("\"Origin\"", "\"origin\"")
     val responseCreator = ResponseCreator(new TimeUtilsImpl())
     val response = for {
       _ <- IO.println(rawInput)

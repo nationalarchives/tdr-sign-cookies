@@ -61,11 +61,11 @@ object LambdaTestUtils {
     keycloakMock.getAccessToken(tokenConfig.build())
   }
 
-  def getInputStream(accessToken: String, origin: String = "http://localhost:9000"): ByteArrayInputStream = {
+  def getInputStream(accessToken: String, origin: String = "http://localhost:9000", originKey: String = "origin"): ByteArrayInputStream = {
     val input = s"""{
        |  "headers": {
        |    "Authorization": "Bearer $accessToken",
-       |    "origin": "$origin"
+       |    "$originKey": "$origin"
        |
        |  },
        |  "requestContext": {
