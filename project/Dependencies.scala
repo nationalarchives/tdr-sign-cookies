@@ -13,7 +13,7 @@ object Dependencies {
   lazy val circeParser = "io.circe" %% "circe-parser" % circeVersion
   lazy val pureConfig = "com.github.pureconfig" %% "pureconfig" % pureConfigVersion
   lazy val pureConfigCatsEffect = "com.github.pureconfig" %% "pureconfig-cats-effect" % pureConfigVersion
-  lazy val scalaTest = "org.scalatest" %% "scalatest" % "3.2.8"
+  lazy val scalaTest = "org.scalatest" %% "scalatest" % "3.2.11"
   lazy val typesafeConfig = "com.typesafe" % "config" % "1.4.1"
   lazy val wiremock = "com.github.tomakehurst" % "wiremock" % "2.27.2"
   lazy val keycloakMock = "com.tngtech.keycloakmock" % "mock" % "0.2.0"
