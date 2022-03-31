@@ -17,5 +17,5 @@ object Dependencies {
   lazy val typesafeConfig = "com.typesafe" % "config" % "1.4.1"
   lazy val wiremock = "com.github.tomakehurst" % "wiremock" % "2.27.2"
   lazy val keycloakMock = "com.tngtech.keycloakmock" % "mock" % "0.2.0"
-  lazy val mockito = "org.mockito" %% "mockito-scala" % "1.16.20"
+  lazy val mockito = "org.mockito" %% "mockito-scala" % "1.16.55"
 }
