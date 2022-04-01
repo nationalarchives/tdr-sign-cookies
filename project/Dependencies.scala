@@ -4,7 +4,7 @@ object Dependencies {
   val circeVersion = "0.14.1"
   val pureConfigVersion = "0.17.1"
 
-  lazy val authUtils = "uk.gov.nationalarchives" %% "tdr-auth-utils" % "0.0.40"
+  lazy val authUtils = "uk.gov.nationalarchives" %% "tdr-auth-utils" % "0.0.42"
   lazy val awsCloudfront = "com.amazonaws" % "aws-java-sdk-cloudfront" % "1.12.190"
   lazy val awsLambda = "com.amazonaws" % "aws-lambda-java-core" % "1.2.1"
   lazy val awsUtils = "uk.gov.nationalarchives.aws.utils" %% "tdr-aws-utils" % "0.1.19"
@@ -17,5 +17,5 @@ object Dependencies {
   lazy val typesafeConfig = "com.typesafe" % "config" % "1.4.2"
   lazy val wiremock = "com.github.tomakehurst" % "wiremock" % "2.27.2"
   lazy val keycloakMock = "com.tngtech.keycloakmock" % "mock" % "0.11.0"
-  lazy val mockito = "org.mockito" %% "mockito-scala" % "1.16.55"
+  lazy val mockito = "org.mockito" %% "mockito-scala" % "1.17.5"
 }
