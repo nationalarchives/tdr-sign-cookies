@@ -1,6 +1,5 @@
 name: TDR Deploy Sign Cookies Lambda
 on:
-  push:
   workflow_dispatch:
     inputs:
       environment:
