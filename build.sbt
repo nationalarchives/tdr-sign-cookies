@@ -5,9 +5,6 @@ ThisBuild / version          := "0.1.0-SNAPSHOT"
 ThisBuild / organization     := "com.example"
 ThisBuild / organizationName := "example"
 
-resolvers ++= Seq[Resolver](
-  "TDR Releases" at "s3://tdr-releases-mgmt"
-)
 lazy val root = (project in file("."))
   .settings(
     name := "tdr-sign-cookies",
