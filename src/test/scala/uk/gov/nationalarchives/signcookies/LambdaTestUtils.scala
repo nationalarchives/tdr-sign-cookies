@@ -8,7 +8,7 @@ import com.github.tomakehurst.wiremock.common.FileSource
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.extension.{Parameters, ResponseDefinitionTransformer}
 import com.github.tomakehurst.wiremock.http.{Request, ResponseDefinition}
-import com.tngtech.keycloakmock.api.KeycloakVerificationMock
+import com.tngtech.keycloakmock.api.{KeycloakMock, ServerConfig}
 import com.tngtech.keycloakmock.api.TokenConfig.aTokenConfig
 
 import java.nio.ByteBuffer
@@ -48,8 +48,11 @@ object LambdaTestUtils {
     }
     override def getName: String = ""
   }))
-
-  val keycloakMock: KeycloakVerificationMock = new KeycloakVerificationMock(9004, "tdr")
+  val config: ServerConfig = ServerConfig.aServerConfig
+    .withPort(9004)
+    .withDefaultRealm("tdr")
+    .build()
+  val keycloakMock: KeycloakMock = new KeycloakMock(config)
 
   def createAccessToken(userId: Option[UUID], expiration: Instant = Instant.now().plusSeconds(3600)): String = {
     val baseConfig = aTokenConfig()
