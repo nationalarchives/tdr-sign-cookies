@@ -5,9 +5,6 @@ ThisBuild / version          := "0.1.0-SNAPSHOT"
 ThisBuild / organization     := "com.example"
 ThisBuild / organizationName := "example"
 
-resolvers ++= Seq[Resolver](
-  "TDR Releases" at "s3://tdr-releases-mgmt"
-)
 lazy val root = (project in file("."))
   .settings(
     name := "tdr-sign-cookies",
@@ -38,3 +35,4 @@ assembly / assemblyMergeStrategy  := {
 }
 Test / fork  := true
 Test / javaOptions += s"-Dconfig.file=${sourceDirectory.value}/test/resources/application.conf"
+Test / envVars := Map("AWS_ACCESS_KEY_ID" -> "test", "AWS_SECRET_ACCESS_KEY" -> "test")
