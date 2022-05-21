@@ -16,6 +16,6 @@ object Dependencies {
   lazy val scalaTest = "org.scalatest" %% "scalatest" % "3.2.12"
   lazy val typesafeConfig = "com.typesafe" % "config" % "1.4.2"
   lazy val wiremock = "com.github.tomakehurst" % "wiremock" % "2.27.2"
-  lazy val keycloakMock = "com.tngtech.keycloakmock" % "mock" % "0.11.0"
+  lazy val keycloakMock = "com.tngtech.keycloakmock" % "mock" % "0.12.0"
   lazy val mockito = "org.mockito" %% "mockito-scala" % "1.17.5"
 }
