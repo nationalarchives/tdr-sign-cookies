@@ -4,7 +4,7 @@ object Dependencies {
   val circeVersion = "0.14.2"
   val pureConfigVersion = "0.17.1"
 
-  lazy val authUtils = "uk.gov.nationalarchives" %% "tdr-auth-utils" % "0.0.56"
+  lazy val authUtils = "uk.gov.nationalarchives" %% "tdr-auth-utils" % "0.0.58"
   lazy val awsCloudfront = "com.amazonaws" % "aws-java-sdk-cloudfront" % "1.12.230"
   lazy val awsLambda = "com.amazonaws" % "aws-lambda-java-core" % "1.2.1"
   lazy val awsUtils = "uk.gov.nationalarchives" %% "tdr-aws-utils" % "0.1.31"
