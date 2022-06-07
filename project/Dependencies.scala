@@ -7,7 +7,7 @@ object Dependencies {
   lazy val authUtils = "uk.gov.nationalarchives" %% "tdr-auth-utils" % "0.0.59"
   lazy val awsCloudfront = "com.amazonaws" % "aws-java-sdk-cloudfront" % "1.12.233"
   lazy val awsLambda = "com.amazonaws" % "aws-lambda-java-core" % "1.2.1"
-  lazy val awsUtils = "uk.gov.nationalarchives" %% "tdr-aws-utils" % "0.1.31"
+  lazy val awsUtils = "uk.gov.nationalarchives" %% "tdr-aws-utils" % "0.1.33"
   lazy val catsEffect = "org.typelevel" %% "cats-effect" % "3.3.12"
   lazy val circeCore = "io.circe" %% "circe-core" % circeVersion
   lazy val circeParser = "io.circe" %% "circe-parser" % circeVersion
